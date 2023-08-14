@@ -1,0 +1,90 @@
+---
+title: "Assignment11"
+author: "Suryaprakash S"
+date: "2023-08-14"
+output: html_document
+---
+
+1. In this exercise you will create some simulated data and will fit simple linear regression models to it. Make sure to use set.seed(1) prior to starting part (a) to ensure consistent results.rnorm
+
+a.	Using the rnorm() function, create a vector, “x”, containing 100 observations drawn from a N(0,1) distribution. This represents a feature, X.
+```{r}
+set.seed(1)
+x <- rnorm(100)
+x
+```
+
+b.	Using the rnorm() function, create a vector, “eps”, containing 100 observations drawn from a N(0,0.25) distribution.
+```{r}
+eps <- rnorm(100, 0, sqrt(0.25))
+eps
+```
+c.	Using “x” and “eps”, generate a vector “y” according to the model
+Y=−1+0.5X+ε.
+What is the length of the vector “y” ? What are the values of β0 and β1 in this linear model ?
+```{r}
+y = -1 + 0.5 * x + eps
+length(y)
+```
+y is of length 100. β0 is -1, β1 is 0.5.
+
+d.	Create a scatterplot displaying the relationship between “x” and “y”. Comment on what you observe.
+```{r}
+plot(x, y)
+```
+A linear relationship between x and y with a positive slope, with a variance as is to be expected.
+
+e.	Fit a least squares linear model to predict “y” using “x”. Comment on the model obtained. How do β^0 and β^1 compare to β0 and β1 ?
+```{r}
+fit <-  lm(y ~ x)
+summary(fit)
+```
+The linear regression fits a model close to the true value of the coefficients as was constructed. The model has a large F-statistic with a near-zero p-value so the null hypothesis can be rejected.
+
+f.	Display the least squares line on the scatterplot obtained in (d). Draw the population regression line on the plot, in a different color. Use the legend() function to create an appropriate legend.
+```{r}
+plot(x, y)
+abline(fit, lwd = 3, col = 2)
+abline(-1, 0.5, lwd = 3, col = 3)
+legend(-1, legend = c("model fit", "pop. regression"), col = 2:3, lwd = 3)
+```
+2.  This problem involves the “Boston” data set, which we saw in the lab for this chapter. We will now try to predict per capita crime rate using the other variables in this data set. In other words, per capita crime rate is the response, and the other variables are the predictors.
+```{r}
+library(MASS)
+```
+a.	For each predictor, fit a simple linear regression model to predict the response. Describe your results. In which of the models is there a statistically significant association between the predictor and the response ? Create some plots to back up your assertions.
+
+Model: crim=β0+β1zn
+crim=β0+β1zn
+```{r}
+lm.zn = lm(crim ~ zn, data = Boston)
+summary(lm.zn)
+```
+Diagnostic Plots
+```{r}
+par(mfrow = c(2,2))
+plot(lm.zn)
+```
+Model: crim=β0+β1indus
+crim=β0+β1indus
+```{r}
+lm.indus = lm(crim ~ indus, data = Boston)
+summary(lm.indus)
+```
+Diagnostic Plot
+```{r}
+par(mfrow = c(2,2))
+plot(lm.indus)
+```
+b.	Fit a multiple regression model to predict the response using all of the predictors. Describe your results. For which predictors can we reject the null hypothesis H0:βj=0 ?
+```{r}
+multiplemodel_fit <- lm(crim ~.,data = Boston)
+summary(multiplemodel_fit)
+```
+A few predictors of the fitted multiple regression model are found to be statistically significant and these include ” zn”, “dis”, “rad”, “black”, and “medv”. dis and rad at the 0.001 level, medv at 0.01 level and zn and black at 0.05 level.
+
+Other remaining variables because of their high p-values, we cannot reject the null hypothesis (H0: βj = 0).
+
+In conclusion, we can only reject the null hypothesis for “zn”, ”dis”, ”rad”, ”black” and “medv”
+
+The multiple regression model generally does not fit the Boston dataset very well because of the low R squared value of 0.454 and the Adjusted R squared value of 0.4396
